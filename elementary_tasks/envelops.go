@@ -42,6 +42,11 @@ func main() {
 			continue
 		}
 
+		if env1_h < 1 || env2_h < 1 || env1_w < 1 || env2_w < 1 {
+			fmt.Println("you have a very strange envelop")
+			continue
+		}
+
 		if env1_h > env2_h && env1_w > env2_w {
 			fmt.Println("you can put the first envelope into the second")
 		} else if env1_h < env2_h && env1_w < env2_w {
