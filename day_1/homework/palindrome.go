@@ -16,6 +16,12 @@ func main() {
 		return
 	}
 
+	if str < 0 {
+		fmt.Println("can't be negative ticket")
+		fmt.Println("0")
+		return
+	}
+
 	if len(str) < 2 {
 		fmt.Println("too short string")
 		fmt.Println("0")
