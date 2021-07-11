@@ -48,7 +48,7 @@ func main() {
 	}
 
 	newSubstr := params[2]
-	// fileWriter := bufio.NewReadWriter(bufio.NewReader(file), bufio.NewWriter(file))
+
 	textBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Fatalln(err)
@@ -57,27 +57,6 @@ func main() {
 	text := string(textBytes)
 	text = strings.ReplaceAll(text, substr, newSubstr)
 	ioutil.WriteFile(fileName, []byte(text), 0644)
-	// for {
-	// 	line, err := fileWriter.ReadString('\n')
-	// 	if err == io.EOF {
-	// 		break
-	// 	}
-	// 	if err != nil {
-	// 		log.Fatalln(err)
-	// 		return
-	// 	}
-
-	// 	if strings.Contains(line, substr) {
-	// 		line = strings.ReplaceAll(line, substr, newSubstr)
-	// 	}
-	// 	// _, err = fileWriter.WriteString(line)
-	// 	// if err != nil {
-	// 	// 	log.Fatalln(err)
-	// 	// }
-
-	// 	ioutil.WriteFile(fileName, []byte(line), 0644)
-	// 	// fileWriter.Flush()
-	// }
 
 	fmt.Println(fmt.Sprintf("replaced %s with %s", substr, newSubstr))
 }
