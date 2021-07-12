@@ -21,6 +21,10 @@ func main() {
 		return
 	}
 
+	for i, elem := range params {
+		param[i] = strings.TrimSpace(elem)
+	}
+
 	fileName := params[0]
 	substr := params[1]
 
