@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -19,6 +20,20 @@ func main() {
 	var name string
 	isRunning = true
 	fmt.Println("type 'n' to stop")
+
+	var err error
+	parseLength := func(str string) float64 {
+		if err != nil {
+			return 0
+		}
+		l, e := strconv.ParseFloat(str, 32)
+		err = e
+		if l < 0 {
+			err = errors.New("not positibe number")
+		}
+		return l
+	}
+
 	for isRunning {
 		scanner.Scan()
 		data := scanner.Text()
@@ -34,40 +49,22 @@ func main() {
 			continue
 		}
 
-		for i, elem := range params {
-			params[i] = strings.TrimSpace(elem)
-		}
+		params = trimSpaces(params)
+
 		name = params[0]
-		a, err := strconv.ParseFloat((params[1]), 32)
-		if err != nil {
-			printRules(scanner)
-			continue
-		}
+		a := parseLength(params[1])
+		b := parseLength(params[2])
+		c := parseLength(params[2])
 
-		b, err := strconv.ParseFloat((params[2]), 32)
-		if err != nil {
-			printRules(scanner)
-			continue
-		}
+		triangle := NewTriangle(a, b, c, name)
 
-		c, err := strconv.ParseFloat((params[3]), 32)
-		if err != nil {
-			printRules(scanner)
-			continue
-		}
-
-		if a < 0 || b < 0 || c < 0 {
-			printRules(scanner)
-			continue
-		}
-
-		if a+b < c || a+c < b || b+c < a {
+		if !triangle.Exists() {
 			fmt.Println("triangle does not exist")
 			askContinue(scanner)
 			continue
 		}
 
-		triangles = append(triangles, NewTriangle(a, b, c, name))
+		triangles = append(triangles, triangle)
 	}
 
 	sort.Slice(triangles, func(i, j int) bool {
@@ -80,6 +77,17 @@ func main() {
 type Triangle struct {
 	a, b, c, square float64
 	name            string
+}
+
+func (it Triangle) Exists() bool {
+	return it.a+it.b < it.c || it.a+it.c < it.b || it.b+it.c < it.a
+}
+
+func trimSpaces(params []string) []string {
+	for i, elem := range params {
+		params[i] = strings.TrimSpace(elem)
+	}
+	return params
 }
 
 func NewTriangle(a, b, c float64, name string) Triangle {
