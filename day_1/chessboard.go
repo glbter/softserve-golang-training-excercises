@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,27 +10,27 @@ import (
 )
 
 func main() {
-	height, err := scan("input height:")
-	if err != nil {
-		fmt.Println("not an integer")
-		return
+	var err error
+	consoleScan := func(text string) int {
+		if err != nil {
+			return 0
+		}
+		num, e := scan(text)
+		err = e
+		if num < 0 {
+			err = errors.New("should be positive integers")
+		}
+		return num
 	}
 
-	width, err := scan("input width:")
+	height := consoleScan("input height: ")
+	width := consoleScan("input width: ")
 	if err != nil {
-		fmt.Println("not an integer")
-		return
-	}
-
-	if height < 0 || width < 0 {
 		fmt.Println("should be positive integers")
 		return
 	}
 
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("input symbol:")
-	scanner.Scan()
-	symbol := scanner.Text()
+	symbol := scanString("symbol: ")
 	row := createRow(width)
 	printChessboard(
 		formatOddRow(row, symbol),
@@ -71,11 +72,16 @@ func printChessboard(odd_row, even_row string, height int) {
 	}
 }
 
-func scan(question string) (int, error) {
+func scanString(question string) string {
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println(question)
+	fmt.Print(question)
 	scanner.Scan()
 	input := scanner.Text()
+	return input
+}
+
+func scan(question string) (int, error) {
+	input := scanString(question)
 	result, err := strconv.ParseInt(input, 10, 32)
 	return int(result), err
 }
