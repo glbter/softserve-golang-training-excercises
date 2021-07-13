@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -19,12 +20,11 @@ func main() {
 	scanner.Scan()
 	data := scanner.Text()
 	number, err := strconv.Atoi(data)
-	if err != nil {
-		printRules()
-		return
+	if number < 0 {
+		err = errors.New("negative number")
 	}
 
-	if number < 0 {
+	if err != nil {
 		printRules()
 		return
 	}
@@ -36,6 +36,7 @@ func printRules() {
 	fmt.Println("you should type a positive integer")
 }
 
+// TODO: convert to rus/ukr
 func converNumToString(number int) string {
 	var builder strings.Builder
 	splitNum := splitToDigits(number)
