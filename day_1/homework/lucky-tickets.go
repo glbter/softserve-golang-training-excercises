@@ -106,5 +106,5 @@ func scan(question string) (int, error) {
 }
 
 func validTicket(num int) bool {
-	return 1e6 <= num && num <= 1e7
+	return 1e5 <= num && num <= 1e6
 }
