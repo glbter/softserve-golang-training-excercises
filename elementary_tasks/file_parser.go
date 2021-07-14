@@ -22,7 +22,7 @@ func main() {
 	}
 
 	for i, elem := range params {
-		param[i] = strings.TrimSpace(elem)
+		params[i] = strings.TrimSpace(elem)
 	}
 
 	fileName := params[0]
