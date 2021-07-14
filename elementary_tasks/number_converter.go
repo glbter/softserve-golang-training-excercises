@@ -14,6 +14,7 @@ var ones = *initOnes()
 var elevens = *initElevens()
 var tens = *initTens()
 var category = *initCategory()
+var hundreds = *initHundreds()
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -36,43 +37,44 @@ func printRules() {
 	fmt.Println("you should type a positive integer")
 }
 
-// TODO: convert to rus/ukr
 func converNumToString(number int) string {
 	var builder strings.Builder
 	splitNum := splitToDigits(number)
 
 	if len(splitNum) == 1 && splitNum[0] == 0 {
-		return "zero"
+		return "ноль"
 	}
 
 	hasElevens := false
+	var prevNum, prePrevNum int
 	for i, num := range splitNum {
 		categ := (len(splitNum) - i)
-		fmt.Println(categ)
+		lastTen := prePrevNum*10 + prevNum
 		if categ%3 == 0 && i != 0 {
-			builder.WriteString(category[int(math.Floor(float64(categ/3)))])
+			categoryNum := int(math.Floor(float64(categ / 3)))
+			categoryPart := category[categoryNum]
+			builder.WriteString(getStringCategory(categoryPart, lastTen))
 		}
+
 		switch {
 		case num == 0:
 			continue
+		case hasElevens:
+			builder.WriteString(elevens[num])
+			hasElevens = false
 		case categ%3 == 2 && num == 1:
 			hasElevens = true
 			continue
 		case categ%3 == 2:
 			builder.WriteString(tens[num])
-		case hasElevens:
-			builder.WriteString(elevens[num])
-			hasElevens = false
+		case categ%3 == 0:
+			builder.WriteString(hundreds[num])
 		default:
 			builder.WriteString(ones[num])
 		}
-
+		prePrevNum = prevNum
+		prevNum = num
 		builder.WriteString(" ")
-
-		littleCategory := ((len(splitNum) - i - 1) % 3)
-		if littleCategory == 2 {
-			builder.WriteString("hundred ")
-		}
 	}
 
 	return builder.String()
@@ -97,33 +99,50 @@ func splitToDigits(n int) []int {
 	return ret
 }
 
+func getStringCategory(category Category, lastTen int) (result string) {
+	lastDigit := lastTen % 10
+	switch {
+	case 10 <= lastTen && lastTen <= 19:
+		result = category.Five
+	case lastTen == 0:
+		result = ""
+	case lastDigit < 2:
+		result = category.One
+	case lastDigit < 5:
+		result = category.Two
+	case lastDigit < 10:
+		result = category.Five
+	}
+	return result
+}
+
 func initOnes() *map[int]string {
 	ones := make(map[int]string)
-	ones[0] = "zero"
-	ones[1] = "one"
-	ones[2] = "two"
-	ones[3] = "three"
-	ones[4] = "four"
-	ones[5] = "five"
-	ones[6] = "six"
-	ones[7] = "seven"
-	ones[8] = "eight"
-	ones[9] = "nine"
+	ones[0] = "ноль"
+	ones[1] = "один"
+	ones[2] = "два"
+	ones[3] = "три"
+	ones[4] = "четире"
+	ones[5] = "пять"
+	ones[6] = "шесть"
+	ones[7] = "семь"
+	ones[8] = "восемь"
+	ones[9] = "девять"
 	return &ones
 }
 
 func initElevens() *map[int]string {
 	elevens := make(map[int]string)
-	elevens[0] = "ten"
-	elevens[1] = "eleven"
-	elevens[2] = "twelve"
-	elevens[3] = "thirteen"
-	elevens[4] = "fourteen"
-	elevens[5] = "fiveteen"
-	elevens[6] = "sixteen"
-	elevens[7] = "seventeen"
-	elevens[8] = "eighteen"
-	elevens[9] = "nineteen"
+	elevens[0] = "десять"
+	elevens[1] = "одинадцать"
+	elevens[2] = "двенадцать"
+	elevens[3] = "тринадцать"
+	elevens[4] = "четырнадцать"
+	elevens[5] = "пятнадцать"
+	elevens[6] = "шестнадцать"
+	elevens[7] = "семьнадцать"
+	elevens[8] = "восемьнадцать"
+	elevens[9] = "девятнадцать"
 	return &elevens
 }
 
@@ -131,27 +150,43 @@ func initTens() *map[int]string {
 	tens := make(map[int]string)
 	tens[0] = ""
 	tens[1] = ""
-	tens[2] = "twenty"
-	tens[3] = "thirty"
-	tens[4] = "fourty"
-	tens[5] = "fifty"
-	tens[6] = "sixty"
-	tens[7] = "seventy"
-	tens[8] = "eighty"
-	tens[9] = "ninety"
+	tens[2] = "двадцать"
+	tens[3] = "тридцать"
+	tens[4] = "сорок"
+	tens[5] = "пятдесят"
+	tens[6] = "шестьдесят"
+	tens[7] = "семьдесят"
+	tens[8] = "восемдесят"
+	tens[9] = "девяносто"
 	return &tens
 }
 
-func initCategory() *map[int]string {
-	category := make(map[int]string)
-	category[0] = ""
-	category[1] = "thousand "
-	category[2] = "million "
-	category[3] = "billion "
-	category[4] = "trillion "
-	category[5] = "Quadrillion  "
-	category[6] = "Quintillion  "
-	category[7] = "Sextillion  "
-	category[8] = "Septillion  "
+func initHundreds() *map[int]string {
+	hundreds := make(map[int]string)
+	hundreds[0] = ""
+	hundreds[1] = "сто"
+	hundreds[2] = "двести"
+	hundreds[3] = "триста"
+	hundreds[4] = "четыриста"
+	hundreds[5] = "пятсот"
+	hundreds[6] = "шестьсот"
+	hundreds[7] = "семьсот"
+	hundreds[8] = "восемсот"
+	hundreds[9] = "девятсот"
+	return &hundreds
+}
+
+func initCategory() *map[int]Category {
+	category := make(map[int]Category)
+	category[0] = Category{"", "", ""}
+	category[1] = Category{"тысяча ", "тысячи ", "тысяч "}
+	category[2] = Category{"миллион ", "миллиона ", "миллионов "}
+	category[3] = Category{"миллиард ", "миллиарда ", "миллиардов "}
 	return &category
+}
+
+type Category struct {
+	One  string
+	Two  string
+	Five string
 }
