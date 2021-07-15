@@ -20,6 +20,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	data := scanner.Text()
+	data = strings.TrimSpace(data)
 	number, err := strconv.Atoi(data)
 	if number < 0 {
 		err = errors.New("negative number")
@@ -45,8 +46,9 @@ func converNumToString(number int) string {
 		return "ноль"
 	}
 
-	hasElevens := false
 	var prevNum, prePrevNum int
+	hasElevens := false
+	skip := false
 	for i, num := range splitNum {
 		categ := (len(splitNum) - i)
 		lastTen := prePrevNum*10 + prevNum
@@ -58,13 +60,13 @@ func converNumToString(number int) string {
 
 		switch {
 		case num == 0:
-			continue
+			skip = true
 		case hasElevens:
 			builder.WriteString(elevens[num])
 			hasElevens = false
 		case categ%3 == 2 && num == 1:
 			hasElevens = true
-			continue
+			skip = true
 		case categ%3 == 2:
 			builder.WriteString(tens[num])
 		case categ%3 == 0:
@@ -74,7 +76,10 @@ func converNumToString(number int) string {
 		}
 		prePrevNum = prevNum
 		prevNum = num
-		builder.WriteString(" ")
+		if !skip {
+			builder.WriteString(" ")
+		}
+		skip = false
 	}
 
 	return builder.String()
