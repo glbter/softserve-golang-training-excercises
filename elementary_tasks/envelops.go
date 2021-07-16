@@ -45,14 +45,12 @@ func main() {
 			continue
 		}
 
-		env1 = env1.makeHeightBigger()
-		env2 = env2.makeHeightBigger()
+		env1 = *env1.makeHeightBigger()
+		env2 = *env2.makeHeightBigger()
 
-		fmt.Println(env1, "\n", env2)
-
-		if env1.isBiggerThan(env2) {
+		if env1.isBiggerThan(&env2) {
 			fmt.Println("you can put the first envelope into the second")
-		} else if env2.isBiggerThan(env1) {
+		} else if env2.isBiggerThan(&env1) {
 			fmt.Println("you can put the second envelope into the first")
 		} else {
 			fmt.Println("you can't put one envlope into another")
