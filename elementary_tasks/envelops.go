@@ -9,61 +9,61 @@ import (
 	"strings"
 )
 
-var isRunning bool
+var run bool
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	isRunning = true
+	sc := bufio.NewScanner(os.Stdin)
+	run = true
 
-	var blockError error
-	consoleScan := func(text string) float32 {
-		if blockError != nil {
+	var Err error
+	consoleScan := func(txt string) float32 {
+		if Err != nil {
 			return 0
 		}
-		num, err := scanFloat(scanner, text)
-		blockError = err
+		num, err := scanFloat(sc, txt)
+		Err = err
 		if num < 0 {
-			blockError = errors.New("negative lenght")
+			Err = errors.New("negative lenght")
 		}
 		return num
 	}
 
-	for isRunning {
+	for run {
 		fmt.Println("First envelop")
-		blockError = nil
+		Err = nil
 
 		env1 := Envelop{consoleScan("height"), consoleScan("width")}
 
-		if blockError == nil {
+		if Err == nil {
 			fmt.Println("Second envelop")
 		}
 
 		env2 := Envelop{consoleScan("height"), consoleScan("width")}
 
-		if blockError != nil {
-			printInstruction(scanner)
+		if Err != nil {
+			printInstruction(sc)
 			continue
 		}
 
-		env1 = env1.makeHightBigger()
-		env2 = env2.makeHightBigger()
+		env1 = env1.makeHeightBigger()
+		env2 = env2.makeHeightBigger()
 
 		fmt.Println(env1, "\n", env2)
 
-		if env1.isBiggerThat(env2) {
+		if env1.isBiggerThan(env2) {
 			fmt.Println("you can put the first envelope into the second")
-		} else if env2.isBiggerThat(env1) {
+		} else if env2.isBiggerThan(env1) {
 			fmt.Println("you can put the second envelope into the first")
 		} else {
 			fmt.Println("you can't put one envlope into another")
 		}
 
-		isRunning = askContinue(scanner)
+		run = askContinue(sc)
 	}
 	fmt.Println("shutting down...")
 }
 
-func (it Envelop) isBiggerThat(o Envelop) bool {
+func (it *Envelop) isBiggerThan(o *Envelop) bool {
 	return it.height > o.height && it.width > o.width
 }
 
@@ -71,36 +71,32 @@ type Envelop struct {
 	height, width float32
 }
 
-func (it Envelop) makeHightBigger() Envelop {
-	it.height, it.width = swapFirstBigger(it.height, it.width)
+func (it *Envelop) makeHeightBigger() *Envelop {
+	if it.height < it.width {
+		it.height, it.width = it.width, it.height
+	}
+
 	return it
 }
 
-func swapFirstBigger(a, b float32) (float32, float32) {
-	if b > a {
-		return b, a
-	}
-	return a, b
-}
-
-func scanFloat(scanner *bufio.Scanner, text string) (float32, error) {
-	fmt.Print(text, ":  ")
-	scanner.Scan()
-	data := scanner.Text()
+func scanFloat(sc *bufio.Scanner, txt string) (float32, error) {
+	fmt.Print(txt, ":  ")
+	sc.Scan()
+	data := sc.Text()
 	res, err := strconv.ParseFloat((data), 32)
 	return float32(res), err
 }
 
-func askContinue(scanner *bufio.Scanner) bool {
+func askContinue(sc *bufio.Scanner) bool {
 	fmt.Println("Continue? ")
-	scanner.Scan()
-	data := scanner.Text()
+	sc.Scan()
+	data := sc.Text()
 	doContinue := strings.ToLower(strings.TrimSpace(data))
 
 	return doContinue == "yes" || doContinue == "y"
 }
 
-func printInstruction(scanner *bufio.Scanner) {
+func printInstruction(sc *bufio.Scanner) {
 	fmt.Println("you should type in envelope parameters one by one. They should be positive numbers. They are width and size")
-	isRunning = askContinue(scanner)
+	run = askContinue(sc)
 }

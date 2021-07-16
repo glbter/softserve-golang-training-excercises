@@ -11,14 +11,14 @@ import (
 	"strings"
 )
 
-var isRunning bool
+var run bool
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
+	sc := bufio.NewScanner(os.Stdin)
 
-	triangles := make([]Triangle, 1)
+	trs := make([]Triangle, 1)
 	var name string
-	isRunning = true
+	run = true
 	fmt.Println("type 'n' to stop")
 
 	var err error
@@ -34,18 +34,18 @@ func main() {
 		return l
 	}
 
-	for isRunning {
-		scanner.Scan()
-		data := scanner.Text()
+	for run {
+		sc.Scan()
+		data := sc.Text()
 		if strings.TrimSpace(data) == "n" {
-			isRunning = false
+			run = false
 			continue
 		}
 
 		params := strings.Split(data, ",")
 		if len(params) != 4 {
 			fmt.Println("wrong format")
-			printRules(scanner)
+			printRules(sc)
 			continue
 		}
 
@@ -56,22 +56,22 @@ func main() {
 		b := parseLength(params[2])
 		c := parseLength(params[2])
 
-		triangle := NewTriangle(a, b, c, name)
+		tr := NewTriangle(a, b, c, name)
 
-		if !triangle.Exists() {
+		if !tr.Exists() {
 			fmt.Println("triangle does not exist")
-			askContinue(scanner)
+			askContinue(sc)
 			continue
 		}
 
-		triangles = append(triangles, triangle)
+		trs = append(trs, tr)
 	}
 
-	sort.Slice(triangles, func(i, j int) bool {
-		return triangles[i].square > triangles[j].square
+	sort.Slice(trs, func(i, j int) bool {
+		return trs[i].square > trs[j].square
 	})
 
-	printTriangles(triangles)
+	printTriangles(trs)
 }
 
 type Triangle struct {
@@ -79,7 +79,7 @@ type Triangle struct {
 	name            string
 }
 
-func (it Triangle) Exists() bool {
+func (it *Triangle) Exists() bool {
 	return it.a+it.b < it.c || it.a+it.c < it.b || it.b+it.c < it.a
 }
 
@@ -96,26 +96,26 @@ func NewTriangle(a, b, c float64, name string) Triangle {
 	return Triangle{a, b, c, s, name}
 }
 
-func printRules(scanner *bufio.Scanner) {
+func printRules(sc *bufio.Scanner) {
 	fmt.Println("you should type a name and three positive numbers")
-	isRunning = askContinue(scanner)
+	run = askContinue(sc)
 }
 
-func printTriangles(triangles []Triangle) {
+func printTriangles(trs []Triangle) {
 	fmt.Println("============= Triangles list: ===============")
-	for _, triangle := range triangles {
-		if triangle.square == 0 {
+	for _, tr := range trs {
+		if tr.square == 0 {
 			break
 		}
-		fmt.Println(triangle.name, " ", triangle.square)
+		fmt.Println(tr.name, " ", tr.square)
 	}
 }
 
-func askContinue(scanner *bufio.Scanner) bool {
+func askContinue(sc *bufio.Scanner) bool {
 	fmt.Println("Continue? ")
-	scanner.Scan()
-	data := scanner.Text()
-	doContinue := strings.ToLower(strings.TrimSpace(data))
+	sc.Scan()
+	data := sc.Text()
+	cont := strings.ToLower(strings.TrimSpace(data))
 
-	return doContinue == "yes" || doContinue == "y"
+	return cont == "yes" || cont == "y"
 }

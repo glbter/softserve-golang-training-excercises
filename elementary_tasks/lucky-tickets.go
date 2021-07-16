@@ -10,9 +10,9 @@ import (
 )
 
 func main() {
-	consoleScanner := bufio.NewScanner(os.Stdin)
-	consoleScanner.Scan()
-	path := consoleScanner.Text()
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Scan()
+	path := sc.Text()
 
 	file, err := os.Open(strings.TrimSpace(path))
 	if err != nil {
@@ -21,26 +21,26 @@ func main() {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords)
-	scanner.Scan()
-	algoName := scanner.Text()
+	sc = bufio.NewScanner(file)
+	sc.Split(bufio.ScanWords)
+	sc.Scan()
+	algoN := sc.Text()
 
-	algo, err := getAlgorithm(algoName)
+	algo, err := getAlgorithm(algoN)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
 	var count int
-	for scanner.Scan() {
-		data, err := scan(scanner)
+	for sc.Scan() {
+		data, err := scan(sc)
 		if err != nil || !validTicket(data) {
 			continue
 		}
 
-		isLucky := algo(splitToDigits(data))
-		if isLucky {
+		lucky := algo(splitToDigits(data))
+		if lucky {
 			count++
 		}
 	}
@@ -49,8 +49,8 @@ func main() {
 	fmt.Println(fmt.Sprint("Amount of lucky tickets: ", count))
 }
 
-func getAlgorithm(algoName string) (func([]int) bool, error) {
-	switch strings.ToLower(algoName) {
+func getAlgorithm(algo string) (func([]int) bool, error) {
+	switch strings.ToLower(algo) {
 	case "piter":
 		return validateHardFormula, nil
 	case "moskow":
@@ -60,30 +60,32 @@ func getAlgorithm(algoName string) (func([]int) bool, error) {
 	}
 }
 
-func validateEasyFormula(ticket []int) bool {
-	var left_sum, right_sum int
-	for i, elem := range ticket {
+// input ticket
+func validateEasyFormula(t []int) bool {
+	var lSum, rSum int
+	for i, elem := range t {
 		if i < 3 {
-			left_sum += elem
+			lSum += elem
 		} else {
-			right_sum += elem
+			rSum += elem
 		}
 	}
 
-	return left_sum == right_sum
+	return lSum == rSum
 }
 
-func validateHardFormula(ticket []int) bool {
-	var even_sum, odd_sum int
-	for i, elem := range ticket {
+// input ticket
+func validateHardFormula(t []int) bool {
+	var eSum, oSum int // even and odd
+	for i, elem := range t {
 		if i%2 == 0 {
-			even_sum += elem
+			eSum += elem
 		} else {
-			odd_sum += elem
+			oSum += elem
 		}
 	}
 
-	return even_sum == odd_sum
+	return eSum == oSum
 }
 
 func reverseInt(s []int) {
@@ -105,10 +107,10 @@ func splitToDigits(n int) []int {
 	return ret
 }
 
-func scan(scanner *bufio.Scanner) (int, error) {
-	input := scanner.Text()
-	result, err := strconv.Atoi(input)
-	return int(result), err
+func scan(sc *bufio.Scanner) (int, error) {
+	str := sc.Text()
+	res, err := strconv.Atoi(str)
+	return int(res), err
 }
 
 func validTicket(num int) bool {

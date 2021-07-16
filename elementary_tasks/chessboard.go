@@ -11,11 +11,11 @@ import (
 
 func main() {
 	var err error
-	consoleScan := func(text string) int {
+	consoleScan := func(txt string) int {
 		if err != nil {
 			return 0
 		}
-		num, e := scan(text)
+		num, e := scanInt(txt)
 		err = e
 		if num < 0 {
 			err = errors.New("should be positive integers")
@@ -23,26 +23,27 @@ func main() {
 		return num
 	}
 
-	height := consoleScan("input height: ")
-	width := consoleScan("input width: ")
+	i := consoleScan("input height: ")
+	w := consoleScan("input width: ")
 	if err != nil {
 		fmt.Println("should be positive integers")
 		return
 	}
 
-	symbol := scanString("symbol: ")
-	row := createRow(width)
+	s := scanString("symbol: ")
+	row := createRow(w)
 	printChessboard(
-		formatOddRow(row, symbol),
-		formatEvenRow(row, symbol),
-		height)
+		formatOddRow(row, s),
+		formatEvenRow(row, s),
+		i)
 }
 
-func createRow(width int) int {
+//input: width
+func createRow(w int) int {
 	row := 1
-	for w := 1; w < width*2; w++ {
+	for i := 1; i < w*2; i++ {
 		row = row << 1
-		if w%2 == 0 {
+		if i%2 == 0 {
 			row++
 		}
 	}
@@ -50,44 +51,46 @@ func createRow(width int) int {
 	return row
 }
 
-func formatOddRow(row int, symbol string) string {
-	odd_row := "0" + strconv.FormatInt(int64(row>>1), 2)
-	odd_row = format(odd_row, symbol)
-	return odd_row
+func formatOddRow(row int, s string) string {
+	r := "0" + strconv.FormatInt(int64(row>>1), 2)
+	r = format(r, s)
+	return r
 }
 
-func formatEvenRow(row int, symbol string) string {
-	even_row := strconv.FormatInt(int64(row), 2)
-	even_row = format(even_row, symbol)
-	return even_row
+func formatEvenRow(row int, s string) string {
+	r := strconv.FormatInt(int64(row), 2)
+	r = format(r, s)
+	return r
 }
 
-func printChessboard(odd_row, even_row string, height int) {
-	for h := 1; h <= height; h++ {
-		if h%2 == 0 {
-			fmt.Println(odd_row)
-		} else {
-			fmt.Println(even_row)
+// odd and even row, height
+func printChessboard(odd, even string, h int) {
+	for i := 1; i <= h; i++ {
+		if i%2 == 0 {
+			fmt.Println(odd)
+			continue
 		}
+		fmt.Println(even)
 	}
 }
 
-func scanString(question string) string {
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print(question)
-	scanner.Scan()
-	input := scanner.Text()
-	return input
+// input: question
+func scanString(q string) string {
+	sc := bufio.NewScanner(os.Stdin)
+	fmt.Print(q)
+	sc.Scan()
+	str := sc.Text()
+	return str
 }
 
-func scan(question string) (int, error) {
-	input := scanString(question)
-	result, err := strconv.ParseInt(input, 10, 32)
-	return int(result), err
+func scanInt(q string) (int, error) {
+	str := scanString(q)
+	res, err := strconv.ParseInt(str, 10, 32)
+	return int(res), err
 }
 
-func format(str string, symbol string) string {
+func format(str string, sym string) string {
 	str = strings.ReplaceAll(str, "0", " ")
-	str = strings.ReplaceAll(str, "1", symbol)
+	str = strings.ReplaceAll(str, "1", sym)
 	return str
 }

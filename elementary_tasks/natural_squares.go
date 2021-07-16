@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	data := scanner.Text()
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Scan()
+	data := sc.Text()
 
 	res, err := strconv.Atoi(data)
 	if err != nil {

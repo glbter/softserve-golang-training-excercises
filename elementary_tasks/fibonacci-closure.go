@@ -11,14 +11,14 @@ import (
 
 func main() {
 	var err error
-	scan := func(question string) int {
+	scan := func(q string) int {
 		if err != nil {
 			return 0
 		}
-		scanner := bufio.NewScanner(os.Stdin)
-		fmt.Print(question)
-		scanner.Scan()
-		data := scanner.Text()
+		sc := bufio.NewScanner(os.Stdin)
+		fmt.Print(q)
+		sc.Scan()
+		data := sc.Text()
 		num, e := strconv.Atoi(strings.TrimSpace(data))
 		err = e
 		if num < 0 {
@@ -65,22 +65,22 @@ func fibInRange(min, max int) []int {
 }
 
 func intFibSeq() func() int {
-	call_num := 0
-	first := 0
-	second := 1
+	call := 0
+	one := 0
+	two := 1
 	return func() int {
-		switch call_num {
+		switch call {
 		case 0:
-			call_num++
-			return first
+			call++
+			return one
 		case 1:
-			call_num++
-			return second
+			call++
+			return two
 		default:
-			tmp := first + second
-			first = second
-			second = tmp
-			return second
+			tmp := one + two
+			one = two
+			two = tmp
+			return two
 		}
 	}
 }

@@ -10,13 +10,13 @@ import (
 )
 
 func main() {
-	consoleScanner := bufio.NewScanner(os.Stdin)
-	consoleScanner.Scan()
-	data := consoleScanner.Text()
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Scan()
+	data := sc.Text()
 	params := strings.Split(strings.TrimSpace(data), " ")
 
-	numParams := len(params)
-	if numParams != 2 && numParams != 3 {
+	p := len(params)
+	if p != 2 && p != 3 {
 		fmt.Println("wrong format: should be 2 <path> <str to count> or <path> <str to find> <str to replace>")
 		return
 	}
@@ -25,29 +25,29 @@ func main() {
 		params[i] = strings.TrimSpace(elem)
 	}
 
-	fileName := params[0]
+	fileN := params[0]
 	substr := params[1]
 
-	file, err := os.OpenFile(fileName, os.O_RDWR, 0644)
+	file, err := os.OpenFile(fileN, os.O_RDWR, 0644)
 	if err != nil {
 		fmt.Println(fmt.Errorf("File read: %w", err))
 	}
 	defer file.Close()
 
-	if numParams == 2 {
-		count := 0
-		fileScanner := bufio.NewScanner(file)
+	if p == 2 {
+		c := 0
+		sc := bufio.NewScanner(file)
 
-		for fileScanner.Scan() {
-			text := fileScanner.Text()
-			count += strings.Count(text, substr)
+		for sc.Scan() {
+			txt := sc.Text()
+			c += strings.Count(txt, substr)
 		}
 
-		if err := fileScanner.Err(); err != nil {
+		if err := sc.Err(); err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println(fmt.Sprintf("appeared %d times", count))
+		fmt.Println(fmt.Sprintf("appeared %d times", c))
 		return
 	}
 
@@ -58,9 +58,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	text := string(textBytes)
-	text = strings.ReplaceAll(text, substr, newSubstr)
-	ioutil.WriteFile(fileName, []byte(text), 0644)
+	txt := string(textBytes)
+	txt = strings.ReplaceAll(txt, substr, newSubstr)
+	ioutil.WriteFile(fileN, []byte(txt), 0644)
 
 	fmt.Println(fmt.Sprintf("replaced %s with %s", substr, newSubstr))
 }
