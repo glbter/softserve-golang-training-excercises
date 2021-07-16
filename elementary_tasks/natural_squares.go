@@ -7,7 +7,12 @@ import (
 	"strconv"
 )
 
+const helloMsg = `program takes a positive integer as input
+outputs all natural numbers which squares are less than input number`
+
 func main() {
+	fmt.Println(helloMsg, "\n")
+
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	data := sc.Text()
@@ -24,9 +29,14 @@ func main() {
 		return
 	}
 
+	fmt.Println()
 	for i := 1; i*i < n; i++ {
-		fmt.Println(i)
+		if i != 1 {
+			fmt.Print(", ")
+		}
+		fmt.Print(i)
 	}
+	fmt.Println()
 }
 
 func printRules() {

@@ -9,7 +9,11 @@ import (
 	"strings"
 )
 
+const helloMsg = `you can type a min and max number to create an interval of fibonacci numbers`
+
 func main() {
+	fmt.Println(helloMsg, "\n")
+
 	var err error
 	scan := func(q string) int {
 		if err != nil {
@@ -42,8 +46,11 @@ func main() {
 }
 
 func printRange(r []int) {
-	for _, elem := range r {
-		fmt.Print(elem, ", ")
+	for i, elem := range r {
+		if i != 0 {
+			fmt.Print(", ")
+		}
+		fmt.Print(elem)
 	}
 	fmt.Println()
 }

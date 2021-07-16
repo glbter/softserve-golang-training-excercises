@@ -9,7 +9,13 @@ import (
 	"strings"
 )
 
+const helloMsg = `you can type height and width of your chessboard
+and a symbol to be used in it
+`
+
 func main() {
+	fmt.Println(helloMsg)
+
 	var err error
 	consoleScan := func(txt string) int {
 		if err != nil {

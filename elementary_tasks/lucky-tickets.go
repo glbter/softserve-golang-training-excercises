@@ -9,7 +9,13 @@ import (
 	"strings"
 )
 
+const helloMsg = `program takes a file path as input
+in the first line in file should be defined algorithm to count lucky tickets: moskow or piter
+than line by line defined six number tickets`
+
 func main() {
+	fmt.Println(helloMsg)
+
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	path := sc.Text()

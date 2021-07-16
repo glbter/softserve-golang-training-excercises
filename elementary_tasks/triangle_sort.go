@@ -11,9 +11,16 @@ import (
 	"strings"
 )
 
+const helloMsg = `program takes triangles as input by convention:
+<name>, <the length of a side a>, <the length of a side b>, <the length of a side c>
+to finish input print "n"
+program will output the list of trianles sorted by their square in descending order `
+
 var run bool
 
 func main() {
+	fmt.Println(helloMsg, "\n")
+
 	sc := bufio.NewScanner(os.Stdin)
 
 	trs := make([]Triangle, 1)

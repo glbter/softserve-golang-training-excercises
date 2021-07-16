@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const helloMsg = `program takes a positive integer as input and returns it word representation`
+
 var ones = *initOnes()
 var elevens = *initElevens()
 var tens = *initTens()
@@ -17,6 +19,8 @@ var category = *initCategory()
 var hundreds = *initHundreds()
 
 func main() {
+	fmt.Println(helloMsg, "\n")
+
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	data := sc.Text()

@@ -9,9 +9,16 @@ import (
 	"strings"
 )
 
+const helloMsg = `you can check whether you can put one envelop into another,
+every envelop is defined by height and width,
+after one comparison you can continue by typing "y" or "yes."
+`
+
 var run bool
 
 func main() {
+	fmt.Println(helloMsg)
+
 	sc := bufio.NewScanner(os.Stdin)
 	run = true
 

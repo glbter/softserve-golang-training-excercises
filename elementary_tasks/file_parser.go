@@ -9,7 +9,15 @@ import (
 	"strings"
 )
 
+const helloMsg = `mode 1: count the number of occurrences of a string 
+mode 12: replace the string with a new string 
+program takes such arguments on the start:
+1. <file path> <string to count>
+2. <file path> <string to find> <string to replace>`
+
 func main() {
+	fmt.Println(helloMsg, "\n")
+
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	data := sc.Text()
