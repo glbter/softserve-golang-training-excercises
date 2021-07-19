@@ -1,9 +1,6 @@
 package task1
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -47,23 +44,6 @@ func MakeChessboard(odd, even string, h int) string {
 		b.WriteString(odd)
 	}
 	return b.String()
-}
-
-// input: question
-func ScanString(sc *bufio.Scanner, q string) string {
-	fmt.Print(q)
-	sc.Scan()
-	str := sc.Text()
-	return str
-}
-
-func ScanPositiveInt(sc *bufio.Scanner, q string) (int, error) {
-	str := ScanString(sc, q)
-	res, err := strconv.ParseInt(str, 10, 32)
-	if err == nil && res <= 0 {
-		err = errors.New("should be positive integers")
-	}
-	return int(res), err
 }
 
 func Format(str string, sym string) string {

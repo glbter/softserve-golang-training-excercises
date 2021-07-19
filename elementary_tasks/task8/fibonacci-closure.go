@@ -1,19 +1,5 @@
 package task8
 
-import (
-	"fmt"
-)
-
-func PrintRange(r []int) {
-	for i, elem := range r {
-		if i != 0 {
-			fmt.Print(", ")
-		}
-		fmt.Print(elem)
-	}
-	fmt.Println()
-}
-
 // open range
 func FibInRange(min, max int) []int {
 	ar := make([]int, 0)

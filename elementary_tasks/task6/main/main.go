@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/integer"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task6"
 )
 
@@ -40,12 +42,12 @@ func main() {
 
 	var count int
 	for sc.Scan() {
-		data, err := task6.Scan(sc)
+		data, err := scan.ScanPositiveInt(sc, "")
 		if err != nil || !task6.ValidTicket(data) {
 			continue
 		}
 
-		lucky := algo(task6.SplitToDigits(data))
+		lucky := algo(integer.SplitToDigits(data))
 		if lucky {
 			count++
 		}

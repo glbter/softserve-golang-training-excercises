@@ -2,13 +2,13 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/print"
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task3"
 )
 
@@ -16,6 +16,7 @@ const helloMsg = `program takes triangles as input by convention:
 <name>, <the length of a side a>, <the length of a side b>, <the length of a side c>
 to finish input print "n"
 program will output the list of trianles sorted by their square in descending order `
+const rule = "you should type a name and three positive numbers"
 
 func main() {
 	fmt.Println(helloMsg, "\n")
@@ -31,40 +32,43 @@ func main() {
 		if err != nil {
 			return 0
 		}
-		l, e := strconv.ParseFloat(str, 32)
+		l, e := scan.ScanPositiveFloat(sc, "")
 		err = e
-		if l < 0 {
-			err = errors.New("not positibe number")
-		}
-		return l
+		return float64(l)
 	}
 
 	for run {
-		sc.Scan()
-		data := sc.Text()
+		err = nil
+		data := scan.ScanString(sc, "")
 		if strings.TrimSpace(data) == "n" {
 			break
 		}
 
 		params := strings.Split(data, ",")
+		fmt.Println(params)
 		if len(params) != 4 {
 			fmt.Println("wrong format")
-			run = task3.PrintRules(sc)
+			run = print.PrintInstruction(sc, rule)
 			continue
 		}
-
+		// todo: fix a bug goto like
+		fmt.Println()
 		params = task3.TrimSpaces(params)
-
+		fmt.Println(params)
 		name := params[0]
 		a := parseLength(params[1])
 		b := parseLength(params[2])
 		c := parseLength(params[3])
+		// if err != nil {
+		// 	run = print.PrintInstruction(sc, rule)
+		// 	continue
+		// }
 
 		tr := task3.NewTriangle(a, b, c, name)
-
+		fmt.Println(tr)
 		if !tr.Exists() {
 			fmt.Println("triangle does not exist")
-			run = task3.AskContinue(sc)
+			run = scan.AskContinue(sc)
 			continue
 		}
 

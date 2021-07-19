@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task1"
 )
 
@@ -21,7 +22,7 @@ func main() {
 		if err != nil {
 			return 0
 		}
-		num, e := task1.ScanPositiveInt(sc, txt)
+		num, e := scan.ScanPositiveInt(sc, txt)
 		err = e
 		return num
 	}
@@ -33,7 +34,7 @@ func main() {
 		return
 	}
 
-	s := task1.ScanString(sc, "symbol: ")
+	s := scan.ScanString(sc, "symbol: ")
 	row := task1.CreateRow(w)
 	chs := task1.MakeChessboard(
 		task1.FormatOddRow(row, s),

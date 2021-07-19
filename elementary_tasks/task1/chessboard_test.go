@@ -1,8 +1,6 @@
 package task1
 
 import (
-	"bufio"
-	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,28 +31,6 @@ func TestFormat(t *testing.T) {
 	}
 	for _, tt := range tts {
 		assert.Equal(t, tt.want, Format(tt.str, tt.sym))
-	}
-}
-
-func TestScanPositiveInt(t *testing.T) {
-	q := "int?"
-	tts := []struct {
-		q    string
-		sc   *bufio.Scanner
-		want int
-		err  bool
-	}{
-		{q, bufio.NewScanner(bytes.NewBufferString("1")), 1, false},
-		{q, bufio.NewScanner(bytes.NewBufferString("-1")), 0, true},
-		{q, bufio.NewScanner(bytes.NewBufferString("0")), 0, true},
-		{q, bufio.NewScanner(bytes.NewBufferString("1.5")), 0, true},
-	}
-	for _, tt := range tts {
-		got, err := ScanPositiveInt(tt.sc, tt.q)
-		assert.Equal(t, err != nil, tt.err)
-		if err == nil {
-			assert.Equal(t, tt.want, got)
-		}
 	}
 }
 

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/print"
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task2"
 )
 
@@ -12,6 +14,7 @@ const helloMsg = `you can check whether you can put one envelop into another,
 every envelop is defined by height and width,
 after one comparison you can continue by typing "y" or "yes."
 `
+const instruction = "you should type in envelope parameters one by one. They should be positive numbers. They are width and size"
 
 func main() {
 	fmt.Println(helloMsg)
@@ -24,7 +27,7 @@ func main() {
 		if Err != nil {
 			return 0
 		}
-		num, err := task2.ScanPositiveFloat(sc, txt)
+		num, err := scan.ScanPositiveFloat(sc, txt+": ")
 		Err = err
 		return num
 	}
@@ -39,12 +42,12 @@ func main() {
 
 		env2 := task2.NewEnvelop(consoleScan("height"), consoleScan("width"))
 		if Err != nil {
-			run = task2.PrintInstruction(sc)
+			run = print.PrintInstruction(sc, instruction)
 			continue
 		}
 
 		fmt.Println(task2.EnvelopComparisonStr(env1, env2))
-		run = task2.AskContinue(sc)
+		run = scan.AskContinue(sc)
 	}
 	fmt.Println("shutting down...")
 }

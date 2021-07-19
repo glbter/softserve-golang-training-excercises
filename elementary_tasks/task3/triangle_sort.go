@@ -1,7 +1,6 @@
 package task3
 
 import (
-	"bufio"
 	"fmt"
 	"math"
 	"strings"
@@ -37,18 +36,4 @@ func PrintTriangles(trs []Triangle) {
 		}
 		fmt.Println(tr.name, " ", tr.Square)
 	}
-}
-
-func PrintRules(sc *bufio.Scanner) bool {
-	fmt.Println("you should type a name and three positive numbers")
-	return AskContinue(sc)
-}
-
-func AskContinue(sc *bufio.Scanner) bool {
-	fmt.Println("Continue? ")
-	sc.Scan()
-	data := sc.Text()
-	cont := strings.ToLower(strings.TrimSpace(data))
-
-	return cont == "yes" || cont == "y"
 }

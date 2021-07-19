@@ -2,12 +2,13 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"math"
 	"os"
-	"strconv"
 	"strings"
+
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/integer"
 )
 
 const helloMsg = `program takes a positive integer as input and returns it word representation`
@@ -22,14 +23,7 @@ func main() {
 	fmt.Println(helloMsg, "\n")
 
 	sc := bufio.NewScanner(os.Stdin)
-	sc.Scan()
-	data := sc.Text()
-	data = strings.TrimSpace(data)
-	num, err := strconv.Atoi(data)
-	if num < 0 {
-		err = errors.New("negative number")
-	}
-
+	num, err := scan.ScanPositiveInt(sc, "")
 	if err != nil {
 		printRules()
 		return
@@ -44,7 +38,7 @@ func printRules() {
 
 func converNumToString(num int) string {
 	var b strings.Builder
-	splt := splitToDigits(num)
+	splt := integer.SplitToDigits(num)
 
 	if len(splt) == 1 && splt[0] == 0 {
 		return "ноль"
@@ -87,25 +81,6 @@ func converNumToString(num int) string {
 	}
 
 	return b.String()
-}
-
-func reverseInt(s []int) {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
-}
-
-func splitToDigits(n int) []int {
-	var ret []int
-
-	for n != 0 {
-		ret = append(ret, n%10)
-		n /= 10
-	}
-
-	reverseInt(ret)
-
-	return ret
 }
 
 func getStringCategory(c Category, lastTen int) (r string) {
