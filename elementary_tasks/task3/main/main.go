@@ -19,7 +19,7 @@ program will output the list of trianles sorted by their square in descending or
 const rule = "you should type a name and three positive numbers"
 
 func main() {
-	fmt.Println(helloMsg, "\n")
+	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
 	sc := bufio.NewScanner(os.Stdin)
 

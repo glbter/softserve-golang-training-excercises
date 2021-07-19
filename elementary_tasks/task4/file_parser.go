@@ -16,7 +16,7 @@ program takes such arguments on the start:
 2. <file path> <string to find> <string to replace>`
 
 func main() {
-	fmt.Println(helloMsg, "\n")
+	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()

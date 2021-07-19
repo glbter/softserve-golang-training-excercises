@@ -20,7 +20,7 @@ var category = *initCategory()
 var hundreds = *initHundreds()
 
 func main() {
-	fmt.Println(helloMsg, "\n")
+	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
 	sc := bufio.NewScanner(os.Stdin)
 	num, err := scan.ScanPositiveInt(sc, "")

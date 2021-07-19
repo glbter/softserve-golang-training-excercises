@@ -13,7 +13,7 @@ import (
 const helloMsg = `you can type a min and max number to create an interval of fibonacci numbers`
 
 func main() {
-	fmt.Println(helloMsg, "\n")
+	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
 	sc := bufio.NewScanner(os.Stdin)
 	var err error

@@ -14,7 +14,7 @@ const helloMsg = `program takes a positive integer as input
 outputs all natural numbers which squares are less than input number`
 
 func main() {
-	fmt.Println(helloMsg, "\n")
+	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
 	sc := bufio.NewScanner(os.Stdin)
 
