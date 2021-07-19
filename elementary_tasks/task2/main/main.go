@@ -31,7 +31,6 @@ func main() {
 
 	for run {
 		fmt.Println("First envelop")
-		Err = nil
 
 		env1 := task2.NewEnvelop(consoleScan("height"), consoleScan("width"))
 		if Err == nil {
