@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"testing"
 
-	// "github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task1"
 	"github.com/stretchr/testify/assert"
 )
 

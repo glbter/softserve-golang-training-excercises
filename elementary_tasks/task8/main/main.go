@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task8"
 )
 
 const helloMsg = `you can type a min and max number to create an interval of fibonacci numbers`
@@ -41,53 +43,6 @@ func main() {
 		min, max = max, min
 	}
 
-	r := fibInRange(min, max)
-	printRange(r)
-}
-
-func printRange(r []int) {
-	for i, elem := range r {
-		if i != 0 {
-			fmt.Print(", ")
-		}
-		fmt.Print(elem)
-	}
-	fmt.Println()
-}
-
-func fibInRange(min, max int) []int {
-	ar := make([]int, 0)
-	num := 0
-	nextInt := intFibSeq()
-	for num < max {
-		num = nextInt()
-		if num > max {
-			return ar
-		}
-		if num > min {
-			ar = append(ar, num)
-		}
-	}
-	return ar
-}
-
-func intFibSeq() func() int {
-	call := 0
-	one := 0
-	two := 1
-	return func() int {
-		switch call {
-		case 0:
-			call++
-			return one
-		case 1:
-			call++
-			return two
-		default:
-			tmp := one + two
-			one = two
-			two = tmp
-			return two
-		}
-	}
+	r := task8.FibInRange(min, max)
+	task8.PrintRange(r)
 }
