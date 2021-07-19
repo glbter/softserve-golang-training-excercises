@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task7"
 )
 
 const helloMsg = `program takes a positive integer as input
@@ -29,14 +31,8 @@ func main() {
 		return
 	}
 
-	fmt.Println()
-	for i := 1; i*i < n; i++ {
-		if i != 1 {
-			fmt.Print(", ")
-		}
-		fmt.Print(i)
-	}
-	fmt.Println()
+	nums := task7.NaturalSquaresLessThan(n)
+	task7.PrintNums(nums)
 }
 
 func printRules() {
