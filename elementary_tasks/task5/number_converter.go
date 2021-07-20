@@ -1,7 +1,6 @@
 package task5
 
 import (
-	"math"
 	"strings"
 
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/integer"
@@ -29,7 +28,7 @@ func ConvertNumToString(num int) string {
 	for i, num := range splt {
 		categ := (len(splt) - i)
 
-		categNum := int(math.Floor(float64(categ / 3)))
+		categNum := int(categ / 3)
 		if categ%3 == 0 && i != 0 {
 			categPart := category[categNum]
 			b.WriteString(GetStringCategory(categPart, lastHundred))
