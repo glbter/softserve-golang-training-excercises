@@ -1,67 +1,49 @@
-package main
+package task5
 
 import (
-	"bufio"
-	"fmt"
 	"math"
-	"os"
 	"strings"
 
-	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/integer"
 )
 
-const helloMsg = `program takes a positive integer as input and returns it word representation`
+var (
+	onesMale   = *initOnesMale()
+	onesFemale = *initOnesFemale()
+	elevens    = *initElevens()
+	tens       = *initTens()
+	category   = *initCategory()
+	hundreds   = *initHundreds()
+)
 
-var ones = *initOnes()
-var elevens = *initElevens()
-var tens = *initTens()
-var category = *initCategory()
-var hundreds = *initHundreds()
-
-func main() {
-	fmt.Println(fmt.Sprint(helloMsg, "\n"))
-
-	sc := bufio.NewScanner(os.Stdin)
-	num, err := scan.ScanPositiveInt(sc, "")
-	if err != nil {
-		printRules()
-		return
+func ConvertNumToString(num int) string {
+	if num < 10 {
+		return onesMale[num]
 	}
 
-	fmt.Println(converNumToString(num))
-}
-
-func printRules() {
-	fmt.Println("you should type a positive integer")
-}
-
-func converNumToString(num int) string {
 	var b strings.Builder
+	var lastHundred int
+	var hasElevens, skip bool
 	splt := integer.SplitToDigits(num)
 
-	if len(splt) == 1 && splt[0] == 0 {
-		return "ноль"
-	}
-
-	var prevNum, prePrevNum int
-	hasElevens := false
-	skip := false
 	for i, num := range splt {
 		categ := (len(splt) - i)
-		lastTen := prePrevNum*10 + prevNum
+
+		categNum := int(math.Floor(float64(categ / 3)))
 		if categ%3 == 0 && i != 0 {
-			categNum := int(math.Floor(float64(categ / 3)))
 			categPart := category[categNum]
-			b.WriteString(getStringCategory(categPart, lastTen))
+			b.WriteString(GetStringCategory(categPart, lastHundred))
+			b.WriteString(" ")
+			lastHundred = 0
 		}
+		lastHundred = lastHundred*10 + num
 
 		switch {
-		case num == 0:
-			skip = true
 		case hasElevens:
 			b.WriteString(elevens[num])
 			hasElevens = false
+		case num == 0:
+			skip = true
 		case categ%3 == 2 && num == 1:
 			hasElevens = true
 			skip = true
@@ -70,26 +52,37 @@ func converNumToString(num int) string {
 		case categ%3 == 0:
 			b.WriteString(hundreds[num])
 		default:
-			b.WriteString(ones[num])
+			// to skip один when тысяча
+			if (categ%3 == 1) && (lastHundred == 1) {
+				break
+			}
+			categPart := category[categNum]
+			if categPart.Male {
+				b.WriteString(onesMale[num])
+				break
+			}
+			b.WriteString(onesFemale[num])
 		}
-		prePrevNum = prevNum
-		prevNum = num
-		if !skip {
+
+		if !skip && categ != 1 {
 			b.WriteString(" ")
 		}
 		skip = false
 	}
 
-	return b.String()
+	return strings.TrimSpace(b.String())
 }
 
-func getStringCategory(c Category, lastTen int) (r string) {
-	lastDigit := lastTen % 10
+func GetStringCategory(c Category, lastHundred int) (r string) {
+	lastDigit := lastHundred % 10
+	lastTen := lastHundred % 100
 	switch {
+	case lastHundred == 0:
+		r = ""
 	case 10 <= lastTen && lastTen <= 19:
 		r = c.Five
-	case lastTen == 0:
-		r = ""
+	case lastDigit == 0:
+		r = c.Five
 	case lastDigit < 2:
 		r = c.One
 	case lastDigit < 5:
@@ -100,11 +93,26 @@ func getStringCategory(c Category, lastTen int) (r string) {
 	return r
 }
 
-func initOnes() *map[int]string {
+func initOnesMale() *map[int]string {
 	o := make(map[int]string)
 	o[0] = "ноль"
 	o[1] = "один"
 	o[2] = "два"
+	o[3] = "три"
+	o[4] = "четире"
+	o[5] = "пять"
+	o[6] = "шесть"
+	o[7] = "семь"
+	o[8] = "восемь"
+	o[9] = "девять"
+	return &o
+}
+
+func initOnesFemale() *map[int]string {
+	o := make(map[int]string)
+	o[0] = "ноль"
+	o[1] = "одна"
+	o[2] = "две"
 	o[3] = "три"
 	o[4] = "четире"
 	o[5] = "пять"
@@ -124,8 +132,8 @@ func initElevens() *map[int]string {
 	e[4] = "четырнадцать"
 	e[5] = "пятнадцать"
 	e[6] = "шестнадцать"
-	e[7] = "семьнадцать"
-	e[8] = "восемьнадцать"
+	e[7] = "семнадцать"
+	e[8] = "восемнадцать"
 	e[9] = "девятнадцать"
 	return &e
 }
@@ -162,10 +170,10 @@ func initHundreds() *map[int]string {
 
 func initCategory() *map[int]Category {
 	c := make(map[int]Category)
-	c[0] = Category{"", "", ""}
-	c[1] = Category{"тысяча ", "тысячи ", "тысяч "}
-	c[2] = Category{"миллион ", "миллиона ", "миллионов "}
-	c[3] = Category{"миллиард ", "миллиарда ", "миллиардов "}
+	c[0] = Category{"", "", "", true}
+	c[1] = Category{"тысяча", "тысячи", "тысяч", false}
+	c[2] = Category{"миллион", "миллиона", "миллионов", true}
+	c[3] = Category{"миллиард", "миллиарда", "миллиардов", true}
 	return &c
 }
 
@@ -173,4 +181,5 @@ type Category struct {
 	One  string
 	Two  string
 	Five string
+	Male bool
 }
