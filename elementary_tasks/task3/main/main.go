@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/print"
@@ -23,7 +25,7 @@ func main() {
 
 	sc := bufio.NewScanner(os.Stdin)
 
-	trs := make([]task3.Triangle, 1)
+	trs := make([]task3.Triangle, 0)
 	run := true
 	fmt.Println("type 'n' to stop")
 
@@ -32,8 +34,12 @@ func main() {
 		if err != nil {
 			return 0
 		}
-		l, e := scan.ScanPositiveFloat(sc, "")
+		l, e := strconv.ParseFloat(str, 64)
 		err = e
+
+		if l <= 0 {
+			err = errors.New("not positive length")
+		}
 		return float64(l)
 	}
 
@@ -45,27 +51,23 @@ func main() {
 		}
 
 		params := strings.Split(data, ",")
-		fmt.Println(params)
 		if len(params) != 4 {
 			fmt.Println("wrong format")
 			run = print.PrintInstruction(sc, rule)
 			continue
 		}
-		// todo: fix a bug goto like
-		fmt.Println()
+
 		params = task3.TrimSpaces(params)
-		fmt.Println(params)
 		name := params[0]
 		a := parseLength(params[1])
 		b := parseLength(params[2])
 		c := parseLength(params[3])
-		// if err != nil {
-		// 	run = print.PrintInstruction(sc, rule)
-		// 	continue
-		// }
+		if err != nil {
+			run = print.PrintInstruction(sc, rule)
+			continue
+		}
 
 		tr := task3.NewTriangle(a, b, c, name)
-		fmt.Println(tr)
 		if !tr.Exists() {
 			fmt.Println("triangle does not exist")
 			run = scan.AskContinue(sc)
