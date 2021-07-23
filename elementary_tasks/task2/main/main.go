@@ -20,28 +20,26 @@ func main() {
 	fmt.Println(helloMsg)
 
 	sc := bufio.NewScanner(os.Stdin)
+	progCycle(sc)
+
+	fmt.Println("shutting down...")
+}
+
+func progCycle(sc *bufio.Scanner) {
+	qh, qw := "height: ", "width: "
+
 	run := true
-
-	var Err error
-	consoleScan := func(txt string) float32 {
-		if Err != nil {
-			return 0
-		}
-		num, err := scan.ScanPositiveFloat(sc, txt+": ")
-		Err = err
-		return num
-	}
-
 	for run {
 		fmt.Println("First envelop")
+		pfs := scan.NewPositiveFloatScanner(sc)
 
-		env1 := task2.NewEnvelop(consoleScan("height"), consoleScan("width"))
-		if Err == nil {
+		env1 := task2.NewEnvelop(pfs.Scan(qh), pfs.Scan(qw))
+		if pfs.Err() == nil {
 			fmt.Println("Second envelop")
 		}
 
-		env2 := task2.NewEnvelop(consoleScan("height"), consoleScan("width"))
-		if Err != nil {
+		env2 := task2.NewEnvelop(pfs.Scan(qh), pfs.Scan(qw))
+		if pfs.Err() != nil {
 			run = print.PrintInstruction(sc, instruction)
 			continue
 		}
@@ -49,5 +47,4 @@ func main() {
 		fmt.Println(task2.EnvelopComparisonStr(env1, env2))
 		run = scan.AskContinue(sc)
 	}
-	fmt.Println("shutting down...")
 }

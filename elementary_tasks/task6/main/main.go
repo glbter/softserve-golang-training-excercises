@@ -6,8 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
-	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/integer"
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task6"
 )
 
@@ -31,28 +29,17 @@ func main() {
 
 	sc = bufio.NewScanner(file)
 	sc.Split(bufio.ScanWords)
+
 	sc.Scan()
 	algoN := sc.Text()
-
 	algo, err := task6.GetAlgorithm(algoN)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	var count int
-	for sc.Scan() {
-		data, err := scan.ScanPositiveInt(sc, "")
-		if err != nil || !task6.ValidTicket(data) {
-			continue
-		}
-
-		lucky := algo(integer.SplitToDigits(data))
-		if lucky {
-			count++
-		}
-	}
+	c := task6.CountTickets(sc, algo)
 
 	fmt.Println("--Result--")
-	fmt.Println(fmt.Sprint("Amount of lucky tickets: ", count))
+	fmt.Println(fmt.Sprint("Amount of lucky tickets: ", c))
 }

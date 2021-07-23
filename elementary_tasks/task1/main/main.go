@@ -16,25 +16,17 @@ and a symbol to be used in it
 func main() {
 	fmt.Println(helloMsg)
 
-	var err error
 	sc := bufio.NewScanner(os.Stdin)
-	consoleScan := func(txt string) int {
-		if err != nil {
-			return 0
-		}
-		num, e := scan.ScanPositiveInt(sc, txt)
-		err = e
-		return num
-	}
+	ss := scan.NewPositiveIntScanner(sc)
+	i := ss.Scan("input height: ")
+	w := ss.Scan("input width: ")
 
-	i := consoleScan("input height: ")
-	w := consoleScan("input width: ")
-	if err != nil {
+	if ss.Err() != nil {
 		fmt.Println("should be positive integers")
 		return
 	}
 
-	s := scan.ScanString(sc, "symbol: ")
+	s, _ := scan.ScanString(sc, "symbol: ")
 	row := task1.CreateRow(w)
 	chs := task1.MakeChessboard(
 		task1.FormatOddRow(row, s),

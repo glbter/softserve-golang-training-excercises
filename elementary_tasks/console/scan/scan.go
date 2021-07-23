@@ -9,28 +9,37 @@ import (
 )
 
 var (
-	ErrNotPosInt = errors.New("should be positive integer")
-	ErrNotPosNum = errors.New("should be positive number")
+	ErrNotPosInt      = errors.New("should be positive integer")
+	ErrNotPosNum      = errors.New("should be positive number")
+	ErrScannerTrouble = errors.New("scanner returned false")
 )
 
 // input: question
-func ScanString(sc *bufio.Scanner, q string) string {
+
+func ScanString(sc *bufio.Scanner, q string) (string, bool) {
 	fmt.Print(q)
-	sc.Scan()
-	return sc.Text()
+	ok := sc.Scan()
+	return sc.Text(), ok
 }
 
 func ScanPositiveInt(sc *bufio.Scanner, q string) (int, error) {
-	str := ScanString(sc, q)
+	str, ok := ScanString(sc, q)
+	if !ok {
+		return 0, ErrScannerTrouble
+	}
 	res, err := strconv.ParseInt(str, 10, 32)
 	if res <= 0 {
 		err = ErrNotPosInt
 	}
+
 	return int(res), err
 }
 
 func ScanPositiveFloat(sc *bufio.Scanner, q string) (float32, error) {
-	data := ScanString(sc, q)
+	data, ok := ScanString(sc, q)
+	if !ok {
+		return 0, ErrScannerTrouble
+	}
 	res, err := strconv.ParseFloat((data), 32)
 	if res <= 0 {
 		err = ErrNotPosNum
@@ -39,7 +48,7 @@ func ScanPositiveFloat(sc *bufio.Scanner, q string) (float32, error) {
 }
 
 func AskContinue(sc *bufio.Scanner) bool {
-	data := ScanString(sc, "Continue? ")
+	data, _ := ScanString(sc, "Continue? ")
 	cont := strings.ToLower(strings.TrimSpace(data))
 	return cont == "yes" || cont == "y"
 }

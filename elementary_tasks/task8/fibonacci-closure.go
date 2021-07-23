@@ -1,7 +1,15 @@
 package task8
 
+import (
+	"bufio"
+	"io"
+
+	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/scan"
+)
+
 // open range
-func FibInRange(min, max int) []int {
+func FibInRange(mm *MinMax) []int {
+	min, max := mm.Min, mm.Max
 	ar := make([]int, 0)
 	num := 0
 	nextInt := intFibSeq()
@@ -33,4 +41,26 @@ func intFibSeq() func() int {
 			return two
 		}
 	}
+}
+
+type MinMax struct {
+	Min int
+	Max int
+}
+
+func GetMinMax(r io.Reader) (*MinMax, error) {
+	sc := bufio.NewScanner(r)
+	pis := scan.NewPositiveIntScanner(sc)
+
+	min := pis.Scan("greater than:  ")
+	max := pis.Scan("less than:  ")
+	if err := pis.Err(); err != nil {
+		return nil, err
+	}
+
+	if max < min {
+		min, max = max, min
+	}
+
+	return &MinMax{min, max}, nil
 }

@@ -45,7 +45,7 @@ func main() {
 
 	for run {
 		err = nil
-		data := scan.ScanString(sc, "")
+		data, _ := scan.ScanString(sc, "")
 		if strings.TrimSpace(data) == "n" {
 			break
 		}

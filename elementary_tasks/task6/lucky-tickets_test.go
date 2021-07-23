@@ -1,40 +1,15 @@
 package task6
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	f "github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task6/formula"
 )
-
-type formulaTest struct {
-	in   []int
-	want bool
-}
-
-func TestValidateEasyFormula(t *testing.T) {
-	tts := []formulaTest{
-		{[]int{3, 5, 7, 4, 6, 5}, true},
-		{[]int{1, 9, 3, 3, 4, 6}, true},
-		{[]int{1, 2, 3, 4, 5, 6}, false},
-		{[]int{9, 8, 7, 6, 5, 4}, false},
-	}
-	for _, tt := range tts {
-		assert.Equal(t, tt.want, ValidateEasyFormula(tt.in), fmt.Sprintf("arr %v", tt.in))
-	}
-}
-
-func TestValidateHardFormula(t *testing.T) {
-	tts := []formulaTest{
-		{[]int{4, 2, 3, 4, 5, 6}, true},
-		{[]int{1, 2, 3, 5, 5, 2}, true},
-		{[]int{1, 3, 2, 4, 5, 6}, false},
-		{[]int{6, 1, 2, 5, 3, 4}, false},
-	}
-	for _, tt := range tts {
-		assert.Equal(t, tt.want, ValidateHardFormula(tt.in))
-	}
-}
 
 func TestValidTicket(t *testing.T) {
 	tts := []struct {
@@ -55,29 +30,46 @@ func TestValidTicket(t *testing.T) {
 	}
 }
 
-// func TestGetAlgorithm(t *testing.T) {
-// 	var easy = ValidateEasyFormula
-// 	var hard = ValidateHardFormula
-// 	tts := []struct {
-// 		algo string
-// 		want func([]int) bool
-// 	}{
-// 		{"piter", hard},
-// 		{"moskow", easy},
-// 		{"Piter", hard},
-// 		{"Moskow", easy},
-// 		{"PITER", hard},
-// 		{"MOSKOW", easy},
-// 		{"pit", nil},
-// 		{"mosk", nil},
-// 	}
-// 	for _, tt := range tts {
-// 		got, _ := GetAlgorithm(tt.algo)
-// 		// assert.Nil(t, err)
-// 		// if &got != &tt.want {
-// 		// 	t.Errorf("GetAlgorithm(%q), test %d failed", tt.algo, i)
-// 		// 	t.Error(&got, &tt.want)
-// 		// }
-// 		assert.Equal(t, &tt.want, &got)
-// 	}
-// }
+func TestGetAlgorithm(t *testing.T) {
+	tts := []struct {
+		algo string
+		want FormulaValidator
+	}{
+		{"piter", &f.HardFormula{}},
+		{"moskow", &f.EasyFormula{}},
+		{"Piter", &f.HardFormula{}},
+		{"Moskow", &f.EasyFormula{}},
+		{"PITER", &f.HardFormula{}},
+		{"MOSKOW", &f.EasyFormula{}},
+		{"pit", nil},
+		{"mosk", nil},
+	}
+	for _, tt := range tts {
+		got, _ := GetAlgorithm(tt.algo)
+		assert.Equal(t, tt.want, got, fmt.Sprintf("for input: %v", tt.algo))
+	}
+}
+
+func TestCountTickets(t *testing.T) {
+	str := " 123456 \n 357465 \n 193346 \n 987654 \n 423456 \n 123552 \n 132456 \n 612534 "
+	// 357465 - easy
+	// 193346 - easy
+	// 423456 - hard
+	// 123552 - hard
+	sc1 := bufio.NewScanner(bytes.NewReader([]byte(str)))
+	sc2 := bufio.NewScanner(bytes.NewBufferString(str))
+
+	tts := []struct {
+		sc   *bufio.Scanner
+		alg  FormulaValidator
+		want int
+	}{
+		{sc1, &f.EasyFormula{}, 2},
+		{sc2, &f.HardFormula{}, 2},
+	}
+
+	for i, tt := range tts {
+		got := CountTickets(tt.sc, tt.alg)
+		assert.Equal(t, tt.want, got, fmt.Sprintf("testcase num: %d", i))
+	}
+}
