@@ -52,6 +52,6 @@ func main() {
 
 	newSubstr := params[2]
 
-	task4.ChangeOccurancesInFile(&fileR, fileN, &task4.ChangedString{substr, newSubstr})
+	task4.ChangeOccurancesInFile(&fileR, fileN, &task4.ChangedString{Old: substr, New: newSubstr})
 	fmt.Printf("replaced %s with %s \n", substr, newSubstr)
 }
