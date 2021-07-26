@@ -47,3 +47,20 @@ func TestChangeOccurancesInFile(t *testing.T) {
 		assert.Equal(t, tt.want, string(got))
 	}
 }
+
+func TestGetParams(t *testing.T) {
+	tts := []struct {
+		in   string
+		want []string
+		err  error
+	}{
+		{"   test.txt	abracadabra ", []string{"test.txt", "abracadabra"}, nil},
+		{"   test.txt	abracadabra    bebra", []string{"test.txt", "abracadabra", "bebra"}, nil},
+		{"   test.txt	", nil, ErrWrongInputForm},
+	}
+	for _, tt := range tts {
+		got, err := GetParams(tt.in)
+		assert.EqualValues(t, tt.want, got)
+		assert.EqualValues(t, tt.err, err)
+	}
+}

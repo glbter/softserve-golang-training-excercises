@@ -3,7 +3,6 @@ package task4
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -45,29 +44,19 @@ func ChangeOccurancesInFile(r *io.Reader, file string, cs *ChangedString) {
 }
 
 func GetParams(str string) ([]string, error) {
-	params := strings.Split(strings.TrimSpace(str), " ")
+	r := strings.NewReader(str)
+	sc := bufio.NewScanner(r)
+	sc.Split(bufio.ScanWords)
+
+	params := make([]string, 0, 3)
+	for sc.Scan() {
+		params = append(params, sc.Text())
+	}
+
 	p := len(params)
 	if p != 2 && p != 3 {
 		return nil, ErrWrongInputForm
 	}
 
-	for i, elem := range params {
-		params[i] = strings.TrimSpace(elem)
-	}
-
 	return params, nil
-}
-
-func FileHandleStr(r io.Reader, params []string) string {
-	file := params[0]
-	substr := params[1]
-
-	if len(params) == 2 {
-		c := CountOccurancesInFile(&r, substr)
-		return fmt.Sprintf("appeared %d times \n", c)
-	}
-
-	newSubstr := params[2]
-	ChangeOccurancesInFile(&r, file, &ChangedString{Old: substr, New: newSubstr})
-	return fmt.Sprintf("replaced %s with %s \n", substr, newSubstr)
 }

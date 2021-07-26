@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/task4"
@@ -34,5 +35,19 @@ func main() {
 	}
 	defer file.Close()
 
-	fmt.Println(task4.FileHandleStr(file, params))
+	fmt.Println(fileHandleStr(file, params))
+}
+
+func fileHandleStr(r io.Reader, params []string) string {
+	file := params[0]
+	substr := params[1]
+
+	if len(params) == 2 {
+		c := task4.CountOccurancesInFile(&r, substr)
+		return fmt.Sprintf("appeared %d times \n", c)
+	}
+
+	newSubstr := params[2]
+	task4.ChangeOccurancesInFile(&r, file, &task4.ChangedString{Old: substr, New: newSubstr})
+	return fmt.Sprintf("replaced %s with %s \n", substr, newSubstr)
 }
