@@ -1,8 +1,9 @@
 package task3
 
 import (
-	"fmt"
 	"math"
+	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -21,19 +22,44 @@ func NewTriangle(a, b, c float64, name string) *Triangle {
 	return &Triangle{a, b, c, s, name}
 }
 
+func SortTrinalgesDescSq(trs []Triangle) {
+	sort.Slice(trs, func(i, j int) bool {
+		return trs[i].Square > trs[j].Square
+	})
+}
+
+func BuildTriangle(params []string) (*Triangle, bool) {
+	ok := true
+	parseLength := func(str string) float64 {
+		if !ok {
+			return 0
+		}
+		l, err := strconv.ParseFloat(str, 64)
+		ok = (err == nil) && (l > 0)
+
+		return float64(l)
+	}
+
+	name := params[0]
+	a := parseLength(params[1])
+	b := parseLength(params[2])
+	c := parseLength(params[3])
+
+	return NewTriangle(a, b, c, name), ok
+}
+
+func ParseParams(str string) ([]string, bool) {
+	params := strings.Split(str, ",")
+	if len(params) != 4 {
+		return nil, false
+	}
+
+	return TrimSpaces(params), true
+}
+
 func TrimSpaces(params []string) []string {
 	for i, elem := range params {
 		params[i] = strings.TrimSpace(elem)
 	}
 	return params
-}
-
-func PrintTriangles(trs []Triangle) {
-	fmt.Println("============= Triangles list: ===============")
-	for _, tr := range trs {
-		if tr.Square == 0 {
-			break
-		}
-		fmt.Println(tr.name, " ", tr.Square)
-	}
 }

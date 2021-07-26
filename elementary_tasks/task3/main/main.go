@@ -4,9 +4,8 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
-	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/glbter/softserve-golang-training-excercises/elementary_tasks/console/print"
@@ -20,56 +19,49 @@ to finish input print "n"
 program will output the list of trianles sorted by their square in descending order `
 const rule = "you should type a name and three positive numbers"
 
+var (
+	errWrongFormat = errors.New("wrong format, should be: <name>, <the length of a side a>, <the length of a side b>, <the length of a side c>")
+	errNegativeNum = errors.New("all lengths should pe positive numbers")
+)
+
+type triangleError struct {
+	tr task3.Triangle
+}
+
+func (te *triangleError) Error() string {
+	return fmt.Sprintf("such triangle can't exist %+v", te.tr)
+}
+
 func main() {
 	fmt.Println(fmt.Sprint(helloMsg, "\n"))
 
-	sc := bufio.NewScanner(os.Stdin)
+	trs := scanTrianglesList(os.Stdin)
 
+	task3.SortTrinalgesDescSq(trs)
+
+	task3.PrintTriangles(trs)
+}
+
+func scanTrianglesList(r io.Reader) []task3.Triangle {
+	sc := bufio.NewScanner(r)
 	trs := make([]task3.Triangle, 0)
 	run := true
 	fmt.Println("type 'n' to stop")
 
-	var err error
-	parseLength := func(str string) float64 {
-		if err != nil {
-			return 0
-		}
-		l, e := strconv.ParseFloat(str, 64)
-		err = e
-
-		if l <= 0 {
-			err = errors.New("not positive length")
-		}
-		return float64(l)
-	}
-
 	for run {
-		err = nil
 		data, _ := scan.ScanString(sc, "")
 		if strings.TrimSpace(data) == "n" {
 			break
 		}
 
-		params := strings.Split(data, ",")
-		if len(params) != 4 {
-			fmt.Println("wrong format")
+		tr, err := parseTriangle(data)
+		if err == errWrongFormat || err == errNegativeNum {
+			fmt.Println(err.Error())
 			run = print.PrintInstruction(sc, rule)
 			continue
 		}
-
-		params = task3.TrimSpaces(params)
-		name := params[0]
-		a := parseLength(params[1])
-		b := parseLength(params[2])
-		c := parseLength(params[3])
 		if err != nil {
-			run = print.PrintInstruction(sc, rule)
-			continue
-		}
-
-		tr := task3.NewTriangle(a, b, c, name)
-		if !tr.Exists() {
-			fmt.Println("triangle does not exist")
+			fmt.Println(err.Error())
 			run = scan.AskContinue(sc)
 			continue
 		}
@@ -77,9 +69,24 @@ func main() {
 		trs = append(trs, *tr)
 	}
 
-	sort.Slice(trs, func(i, j int) bool {
-		return trs[i].Square > trs[j].Square
-	})
+	return trs
+}
 
-	task3.PrintTriangles(trs)
+func parseTriangle(str string) (*task3.Triangle, error) {
+	params, ok := task3.ParseParams(str)
+	if !ok {
+		return nil, errWrongFormat
+	}
+
+	tr, ok := task3.BuildTriangle(params)
+	if !ok {
+		return nil, errNegativeNum
+	}
+
+	if !tr.Exists() {
+		fmt.Println("triangle does not exist")
+		return nil, &triangleError{*tr}
+
+	}
+	return tr, nil
 }
