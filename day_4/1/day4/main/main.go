@@ -6,26 +6,30 @@
 // as the consumer can run concurrently
 //
 
-package day4
+package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
-func producer(stream Stream) (tweets []*Tweet) {
+func producer(stream Stream, ch chan<- *Tweet) {
+	// defer()
 	for {
 		tweet, err := stream.Next()
 		if err == ErrEOF {
-			return tweets
+			close(ch)
+			return
 		}
 
-		tweets = append(tweets, tweet)
+		ch <- tweet
 	}
 }
 
-func consumer(tweets []*Tweet) {
-	for _, t := range tweets {
+func consumer(tweets <-chan *Tweet, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for t := range tweets {
 		if t.IsTalkingAboutGo() {
 			fmt.Println(t.Username, "\ttweets about golang")
 		} else {
@@ -38,11 +42,16 @@ func main() {
 	start := time.Now()
 	stream := GetMockStream()
 
-	// Producer
-	tweets := producer(stream)
+	ch := make(chan *Tweet, 1)
 
+	var wg sync.WaitGroup
 	// Consumer
-	consumer(tweets)
+	wg.Add(1)
+	go consumer(ch, &wg)
 
+	// Producer
+	producer(stream, ch)
+
+	wg.Wait()
 	fmt.Printf("Process took %s\n", time.Since(start))
 }

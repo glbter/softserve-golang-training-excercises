@@ -4,7 +4,7 @@
 // Your task is to edit `main.go`
 //
 
-package day4
+package main
 
 import (
 	"errors"
