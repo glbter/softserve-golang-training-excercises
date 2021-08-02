@@ -16,19 +16,52 @@
 
 package main
 
+import (
+	"fmt"
+	"sync/atomic"
+	"time"
+)
+
 // User defines the UserModel. Use this to check whether a User is a
 // Premium user or not
 type User struct {
 	ID        int
 	IsPremium bool
-	TimeUsed  int64 // in seconds
+	timeUsed  int32 // in seconds
+}
+
+func (u User) TimeUsed() int32 {
+	return u.timeUsed
+}
+
+func (u *User) IncrementTime() {
+	atomic.AddInt32(&u.timeUsed, 1)
 }
 
 // HandleRequest runs the processes requested by users. Returns false
 // if process had to be killed
-func HandleRequest(process func(), u *User) bool {
-	process()
-	return true
+func HandleRequest(process func(), u *User) (ok bool) {
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	done := make(chan bool)
+	go func() {
+		process()
+		done <- true
+	}()
+
+	for {
+		select {
+		case <-ticker.C:
+			u.IncrementTime()
+			if !u.IsPremium && u.TimeUsed() >= 10 {
+				fmt.Println(u.TimeUsed())
+				return false
+			}
+		case <-done:
+			return true
+		}
+	}
 }
 
 func main() {
