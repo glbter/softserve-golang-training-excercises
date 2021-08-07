@@ -1,8 +1,10 @@
 package task2
 
-const FirstIntoSecond = "you can put the first envelope into the second"
-const SecondIntoFirst = "you can put the second envelope into the first"
-const CantCompare = "you can't put one envlope into another"
+const (
+	FirstIntoSecond = "you can put the first envelop into the second"
+	SecondIntoFirst = "you can put the second envelop into the first"
+	CantCompare     = "you can't put one envelop into another"
+)
 
 type Envelop struct {
 	height, width float32

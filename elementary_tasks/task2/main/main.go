@@ -14,7 +14,7 @@ const helloMsg = `you can check whether you can put one envelop into another,
 every envelop is defined by height and width,
 after one comparison you can continue by typing "y" or "yes."
 `
-const instruction = "you should type in envelope parameters one by one. They should be positive numbers. They are width and size"
+const instruction = "you should type in envelope parameters one by one. They should be positive numbers. They are height and width"
 
 func main() {
 	fmt.Println(helloMsg)

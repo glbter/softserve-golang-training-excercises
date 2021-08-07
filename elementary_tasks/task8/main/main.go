@@ -16,6 +16,7 @@ func main() {
 	mm, err := task8.GetMinMax(os.Stdin)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	r := task8.FibInRange(mm)

@@ -16,6 +16,7 @@ func TestIsBiggerThan(t *testing.T) {
 		{Envelop{5, 7}, Envelop{6, 8}, false},
 		{Envelop{7, 9}, Envelop{6, 8}, true},
 		{Envelop{7, 7}, Envelop{6, 8}, false},
+		{Envelop{6.7, 5.55}, Envelop{6.69, 5.5}, true},
 	}
 	for _, tt := range tts {
 		assert.Equal(t, tt.want, tt.one.IsBiggerThan(&tt.two))

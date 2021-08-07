@@ -15,7 +15,7 @@ func TestFibInRange(t *testing.T) {
 		want []int
 	}{
 		{&MinMax{-1, 25}, []int{0, 1, 1, 2, 3, 5, 8, 13, 21}},
-		{&MinMax{2, 21}, []int{3, 5, 8, 13}},
+		{&MinMax{2, 21}, []int{2, 3, 5, 8, 13, 21}},
 	}
 	for _, tt := range tts {
 		assert.Equal(t, tt.want, FibInRange(tt.mm))
@@ -30,7 +30,7 @@ func TestGetMinMax(t *testing.T) {
 	}{
 		{strings.NewReader("2\n6"), &MinMax{2, 6}, true},
 		{strings.NewReader("6\n2"), &MinMax{2, 6}, true},
-		{strings.NewReader("-6\n2"), nil, false},
+		{strings.NewReader("-6\n2"), &MinMax{-6, 2}, true},
 		{strings.NewReader("6\n2.5"), nil, false},
 		{strings.NewReader("a\n2"), nil, false},
 	}
